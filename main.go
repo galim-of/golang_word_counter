@@ -33,7 +33,6 @@ func main() {
 		waitCh <- struct{}{}
 		wg.Add(1)
 		go func(wg *sync.WaitGroup, url, needle string) {
-			<-waitCh
 			if *debug {
 				log.Printf("num of running goroutines %d\n", runtime.NumGoroutine())
 			}
@@ -42,6 +41,7 @@ func main() {
 				log.Printf("%v\n", err)
 			}
 			total += count
+			<-waitCh
 			wg.Done()
 		}(&wg, url, *needle)
 	}

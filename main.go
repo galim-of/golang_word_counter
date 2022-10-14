@@ -41,8 +41,8 @@ func main() {
 				log.Printf("%v\n", err)
 			}
 			total += count
-			<-waitCh
 			wg.Done()
+			<-waitCh
 		}(&wg, url, *needle)
 	}
 	wg.Wait()

@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+	"sync/atomic"
 )
 
 func main() {
@@ -26,7 +27,7 @@ func main() {
 		log.Printf("count of urls = %d\n", len(urls))
 	}
 
-	total := 0
+	total := int32(0)
 	waitCh := make(chan struct{}, *maxHandlers)
 	wg := sync.WaitGroup{}
 	for _, url := range urls {
@@ -40,7 +41,7 @@ func main() {
 			if err != nil && *debug {
 				log.Printf("%v\n", err)
 			}
-			total += count
+			atomic.AddInt32(&total, int32(count))
 			wg.Done()
 			<-waitCh
 		}(&wg, url, *needle)
